@@ -1,6 +1,7 @@
 require('dotenv').config();
 import http from 'http';
 import cors from 'cors';
+import helmet from 'helmet';
 import express from 'express';
 import routes from './routes';
 import CutShortError from './helpers/cutshort-error';
@@ -17,6 +18,7 @@ class CutShort {
 
     // app configs
     this.app.use(cors());
+    this.app.use(helmet());
     this.app.use(express.urlencoded({ extended: true }));
     this.app.use(express.json());
     this.app.disable('x-powered-by');
@@ -41,7 +43,7 @@ class CutShort {
         });
       }
 
-      return res.status(400).send({
+      return res.status(500).send({
         success: false,
         error: {
           code: 'error.something-went-wrong',
