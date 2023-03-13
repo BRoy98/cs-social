@@ -4,8 +4,11 @@ import cors from 'cors';
 import helmet from 'helmet';
 import express from 'express';
 import routes from './routes';
-import CutShortError from './helpers/cutshort-error';
 import { connectDB } from './models';
+import { unless } from './helpers/unless-route';
+import { errorMiddleware } from './middlewares/error.middleware';
+import { rateLimitMiddleware } from './middlewares/rate-limit.middleware';
+import { jwtAuthMiddleware } from './middlewares/auth.middleware';
 
 const PORT = parseInt(process.env.PORT || process.env.NX_PORT || '3000', 10);
 
@@ -28,29 +31,11 @@ class CutShort {
   }
 
   startServer = async () => {
+    this.app.use(unless(/^\/auth.*/, jwtAuthMiddleware));
+    this.app.use(rateLimitMiddleware);
     this.app.use(routes);
-
     this.app.use('*', (req, res) => res.status(404).send({}));
-
-    this.app.use((err, _, res, __) => {
-      if (err instanceof CutShortError) {
-        return res.status(err.statusCode || 400).send({
-          success: false,
-          error: {
-            code: err.code,
-            message: err.message,
-          },
-        });
-      }
-
-      return res.status(500).send({
-        success: false,
-        error: {
-          code: 'error.something-went-wrong',
-          message: 'Sorry, something went wrong.',
-        },
-      });
-    });
+    this.app.use(errorMiddleware);
 
     await new Promise<void>((resolve) => {
       this.httpServer.listen({ port: PORT }, resolve);

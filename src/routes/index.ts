@@ -8,7 +8,7 @@ const router = express.Router();
 
 router.get('/', (req, res) => res.send(`<pre>Cutshort API 🔥🚀</pre>`));
 router.use('/auth', authRoutes);
-router.use('/todo', jwtAuthMiddleware, todoRoutes);
-router.use('/post', jwtAuthMiddleware, postRoutes);
+router.use('/todo', todoRoutes);
+router.use('/post', postRoutes);
 
 export default router;
