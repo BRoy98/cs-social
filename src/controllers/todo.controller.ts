@@ -48,7 +48,7 @@ export class TodoController implements ITodoController {
 
       return res.send({
         status: true,
-        data: pick(todo, ['title', 'description', 'complete']),
+        data: pick(todo, ['id', 'title', 'description', 'complete']),
       });
     } catch (error) {
       return next(error);
@@ -57,14 +57,12 @@ export class TodoController implements ITodoController {
 
   update = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      if (!Types.ObjectId.isValid(req.params.todoId)) {
-        throw new CutShortError('error.not-found', 'Could not update todo', 404);
-      }
-
       const todo = await TodoModel.findByIdAndUpdate(
         req.params.todoId,
         {
-          ...req.body,
+          ...(req.body.title && { title: req.body.title }),
+          ...(req.body.description && { description: req.body.description }),
+          ...(req.body.complete && { complete: req.body.complete }),
         },
         { new: true }
       )

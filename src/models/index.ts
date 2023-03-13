@@ -37,6 +37,9 @@ mongoose.connection.on('disconnected', () => {
   console.log('MongoDB Disconnected!');
 });
 
+export * from './todos.model';
+export * from './posts.model';
 export * from './users.model';
+export * from './tokens.model';
 
 export default mongoose;

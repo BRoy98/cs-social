@@ -1,4 +1,5 @@
-import { body } from 'express-validator';
+import { body, param } from 'express-validator';
+import { Types } from 'mongoose';
 
 export const createTodoValidator = [
   body('title').notEmpty().withMessage('Title is required'),
@@ -13,6 +14,10 @@ export const createTodoValidator = [
 ];
 
 export const updateTodoValidator = [
+  param('todoId')
+    .notEmpty()
+    .custom((value) => Types.ObjectId.isValid(value))
+    .withMessage('Invalid request'),
   body('title').optional().isString().withMessage('Invalid input'),
   body('description')
     .optional()

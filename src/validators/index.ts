@@ -18,3 +18,4 @@ export const validate = (validations) => async (req, res, next) => {
 };
 
 export * from './todo.validator';
+export * from './post.validator';
