@@ -1,3 +1,3 @@
-import CutShort from "./cutshort";
+import CutShort from './cutshort';
 
 CutShort();

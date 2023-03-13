@@ -1,7 +1,7 @@
-import mongoose, { Document, Schema } from "mongoose";
+import mongoose, { Document, Schema } from 'mongoose';
 
 export enum TokenType {
-  SESSION = "SESSION",
+  SESSION = 'SESSION',
 }
 
 export interface IToken {
@@ -32,9 +32,9 @@ const TokenSchema = new Schema(
       type: Schema.Types.Date,
     },
   },
-  { timestamps: true }
+  { timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } }
 );
 
 TokenSchema.index({ session_created_at: 1 }, { expireAfterSeconds: 2592000 }); // 30 days
 
-export const TokenModel = mongoose.model<ITokenDocument>("tokens", TokenSchema);
+export const TokenModel = mongoose.model<ITokenDocument>('token', TokenSchema);

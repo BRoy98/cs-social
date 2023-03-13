@@ -1,10 +1,11 @@
-import bcrypt from "bcrypt";
-import { Request, Response, NextFunction } from "express";
-import { UserModel } from "../models";
-import { IAuthController } from "./types";
-import CutShortError from "../helpers/cutshort-error";
-import { registerUserSession } from "../services/auth.service";
-import { TokenModel } from "../models/tokens.model";
+import bcrypt from 'bcrypt';
+import { Request, Response, NextFunction } from 'express';
+
+import { UserModel } from '../models';
+import { IAuthController } from './types';
+import { TokenModel } from '../models/tokens.model';
+import CutShortError from '../helpers/cutshort-error';
+import { registerUserSession } from '../services/auth.service';
 
 export class AuthController implements IAuthController {
   async signup(req: Request, res: Response, next: NextFunction) {
@@ -37,8 +38,8 @@ export class AuthController implements IAuthController {
       if (error.code === 11000) {
         return next(
           new CutShortError(
-            "error.user-already-exist",
-            "An user with this email already exists. Please login to continue.",
+            'error.user-already-exist',
+            'An user with this email already exists. Please login to continue.',
             401
           )
         );
@@ -55,8 +56,8 @@ export class AuthController implements IAuthController {
 
       if (!user || !bcrypt.compareSync(req.body.password, user?.password)) {
         throw new CutShortError(
-          "error.invalid-email-password",
-          "The email or password is incorrect.",
+          'error.invalid-email-password',
+          'The email or password is incorrect.',
           401
         );
       }
@@ -81,11 +82,7 @@ export class AuthController implements IAuthController {
       const user = await UserModel.findById(token?.user_id);
 
       if (!user) {
-        throw new CutShortError(
-          "error.invalid-session",
-          "Please login to continue.",
-          401
-        );
+        throw new CutShortError('error.invalid-session', 'Please login to continue.', 401);
       }
 
       const sessionTokens = await registerUserSession(user);

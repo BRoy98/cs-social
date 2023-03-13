@@ -1,11 +1,13 @@
-import express from "express";
-import { AuthController } from "../controllers/auth.controller";
+import express from 'express';
+import { TodoController } from '../controllers/todo.controller';
+import { paginationMiddleware } from '../middlewares/pagination.middleware';
 
 const router = express.Router();
-const controller = new AuthController();
+const controller = new TodoController();
 
-router.post("/login", controller.login);
-router.post("/signup", controller.signup);
-router.post("/refresh", controller.refresh);
+router.get('/', paginationMiddleware, controller.list);
+router.post('/', controller.create);
+router.put('/:todoId', controller.update);
+router.delete('/:todoId', controller.delete);
 
 export default router;

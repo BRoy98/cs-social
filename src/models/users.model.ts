@@ -1,8 +1,8 @@
-import mongoose, { Document, Schema } from "mongoose";
+import mongoose, { Document, Schema } from 'mongoose';
 
 export enum Role {
-  USER = "USER",
-  ADMIN = "ADMIN",
+  USER = 'USER',
+  ADMIN = 'ADMIN',
 }
 
 export interface IUser {
@@ -36,8 +36,8 @@ const UserSchema = new Schema(
     },
   },
   {
-    timestamps: true,
+    timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },
   }
 );
 
-export const UserModel = mongoose.model<IUserDocument>("user", UserSchema);
+export const UserModel = mongoose.model<IUserDocument>('user', UserSchema);

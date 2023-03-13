@@ -1,12 +1,12 @@
-require("dotenv").config();
-import http from "http";
-import cors from "cors";
-import express from "express";
-import routes from "./routes";
-import CutShortError from "./helpers/cutshort-error";
-import { connectDB } from "./models";
+require('dotenv').config();
+import http from 'http';
+import cors from 'cors';
+import express from 'express';
+import routes from './routes';
+import CutShortError from './helpers/cutshort-error';
+import { connectDB } from './models';
 
-const PORT = parseInt(process.env.PORT || process.env.NX_PORT || "3000", 10);
+const PORT = parseInt(process.env.PORT || process.env.NX_PORT || '3000', 10);
 
 class CutShort {
   private app: express.Application;
@@ -19,7 +19,7 @@ class CutShort {
     this.app.use(cors());
     this.app.use(express.urlencoded({ extended: true }));
     this.app.use(express.json());
-    this.app.disable("x-powered-by");
+    this.app.disable('x-powered-by');
 
     connectDB();
     this.httpServer = http.createServer(this.app);
@@ -28,7 +28,7 @@ class CutShort {
   startServer = async () => {
     this.app.use(routes);
 
-    this.app.use("*", (req, res) => res.status(404).send({}));
+    this.app.use('*', (req, res) => res.status(404).send({}));
 
     this.app.use((err, _, res, __) => {
       if (err instanceof CutShortError) {
@@ -44,8 +44,8 @@ class CutShort {
       return res.status(400).send({
         success: false,
         error: {
-          code: "error.something-went-wrong",
-          message: "Sorry, something went wrong.",
+          code: 'error.something-went-wrong',
+          message: 'Sorry, something went wrong.',
         },
       });
     });
