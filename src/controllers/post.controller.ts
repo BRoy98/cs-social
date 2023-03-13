@@ -11,8 +11,15 @@ export class PostController implements IPostController {
     try {
       let search = req.query.q;
       var queryRegEx = new RegExp(String(req.query.q), 'i');
+      let find: any = [];
 
-      let find: any = [{ user_id: new Types.ObjectId(req.body?._user?.id) }];
+      // filter any user's posts if user id is passed
+      if (req.query.user_id) {
+        find.push({ user_id: new Types.ObjectId(String(req.query.user_id)) });
+      } else {
+        // else show logged in user's posts
+        find.push({ user_id: new Types.ObjectId(req.body?._user?.id) });
+      }
 
       // build search query if query is present
       if (search != undefined && search != '') {
@@ -24,7 +31,6 @@ export class PostController implements IPostController {
       const postList = await PostModel.find({
         $and: find,
       })
-        .select('-user_id')
         .skip(req.body._page * req.body._limit)
         .limit(req.body._limit)
         .exec();
@@ -157,7 +163,7 @@ export class PostController implements IPostController {
   };
 
   private formatPost = (post: IPostDocument) => ({
-    ...pick(post, ['id', 'title', 'created_at', 'updated_at']),
+    ...pick(post, ['id', 'title', 'user_id', 'created_at', 'updated_at']),
     comments: map(post.comments, (comment) => pick(comment, ['id', 'comment', 'user_id', 'created_at', 'updated_at'])),
   });
 }

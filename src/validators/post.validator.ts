@@ -1,5 +1,15 @@
-import { body, param } from 'express-validator';
+import { body, param, query } from 'express-validator';
 import { Types } from 'mongoose';
+
+export const listPostValidator = [
+  query('q').optional().isLength({ max: 50 }).withMessage('Query length must be less than 50'),
+  query('page').optional(),
+  query('limit').optional(),
+  query('user_id')
+    .optional()
+    .custom((value) => Types.ObjectId.isValid(value))
+    .withMessage('Invalid user id'),
+];
 
 export const createPostValidator = [body('title').notEmpty().withMessage('Title is required')];
 
