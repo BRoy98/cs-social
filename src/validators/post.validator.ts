@@ -11,7 +11,16 @@ export const listPostValidator = [
     .withMessage('Invalid user id'),
 ];
 
-export const createPostValidator = [body('title').notEmpty().withMessage('Title is required')];
+export const createPostValidator = [
+  body('title').notEmpty().withMessage('Title is required'),
+  body('description')
+    .notEmpty()
+    .isString()
+    .isLength({
+      max: 200,
+    })
+    .withMessage('Description must be less than 200 characters'),
+];
 
 export const updatePostValidator = [
   param('postId')
@@ -19,6 +28,13 @@ export const updatePostValidator = [
     .custom((value) => Types.ObjectId.isValid(value))
     .withMessage('Invalid request'),
   body('title').optional().isString().withMessage('Invalid input'),
+  body('description')
+    .notEmpty()
+    .isString()
+    .isLength({
+      max: 200,
+    })
+    .withMessage('Description must be less than 200 characters'),
 ];
 
 export const createCommentValidator = [

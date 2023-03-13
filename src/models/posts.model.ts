@@ -10,6 +10,7 @@ export interface ICommentDocument extends IComment, Document {}
 export interface IPost {
   user_id: string;
   title: string;
+  description: string;
   comments: Array<ICommentDocument>;
 }
 export interface IPostDocument extends IPost, Document {}
@@ -21,6 +22,10 @@ const PostSchema = new Schema(
       required: true,
     },
     title: {
+      type: Schema.Types.String,
+      required: true,
+    },
+    description: {
       type: Schema.Types.String,
       required: true,
     },

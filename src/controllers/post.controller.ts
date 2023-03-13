@@ -1,8 +1,7 @@
-import { pick, map } from 'lodash';
 import { Types } from 'mongoose';
 import { Request, Response, NextFunction } from 'express';
 
-import { IPostDocument, PostModel } from '../models';
+import { PostModel } from '../models';
 import { IPostController } from './types';
 import CutShortError from '../helpers/cutshort-error';
 
@@ -49,11 +48,12 @@ export class PostController implements IPostController {
       const post = await PostModel.create({
         user_id: req.body?._user?.id,
         title: req.body.title,
+        description: req.body.description,
       });
 
       return res.send({
         status: true,
-        data: pick(post, ['id', 'title', 'comments', 'created_at', 'updated_at']),
+        data: post,
       });
     } catch (error) {
       return next(error);
@@ -73,6 +73,7 @@ export class PostController implements IPostController {
         },
         {
           ...(req.body.title && { title: req.body.title }),
+          ...(req.body.description && { title: req.body.description }),
         },
         { new: true }
       )
@@ -83,7 +84,7 @@ export class PostController implements IPostController {
 
       return res.send({
         status: true,
-        data: this.formatPost(post),
+        data: post,
       });
     } catch (error) {
       return next(error);
@@ -129,7 +130,7 @@ export class PostController implements IPostController {
 
       return res.send({
         status: true,
-        post: this.formatPost(post),
+        data: post,
       });
     } catch (error) {
       return next(error);
@@ -143,8 +144,7 @@ export class PostController implements IPostController {
         {
           $pull: {
             comments: {
-              comment: req.body.comment,
-              user_id: req.body?._user?.id,
+              _id: new Types.ObjectId(req.params.commentId),
             },
           },
         },
@@ -155,15 +155,10 @@ export class PostController implements IPostController {
 
       return res.send({
         status: true,
-        post: this.formatPost(post),
+        data: post,
       });
     } catch (error) {
       return next(error);
     }
   };
-
-  private formatPost = (post: IPostDocument) => ({
-    ...pick(post, ['id', 'title', 'user_id', 'created_at', 'updated_at']),
-    comments: map(post.comments, (comment) => pick(comment, ['id', 'comment', 'user_id', 'created_at', 'updated_at'])),
-  });
 }
