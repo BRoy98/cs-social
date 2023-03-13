@@ -6,7 +6,7 @@ import routes from "./routes";
 import CutShortError from "./helpers/cutshort-error";
 import { connectDB } from "./models";
 
-const PORT = parseInt(process.env.NX_PORT || "4949", 10);
+const PORT = parseInt(process.env.PORT || process.env.NX_PORT || "3000", 10);
 
 class CutShort {
   private app: express.Application;
