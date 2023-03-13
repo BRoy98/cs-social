@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 
 export const paginationMiddleware = async (req: Request, res: Response, next: NextFunction) => {
-  req.body._page = parseInt(req.body.page, 10) || 0;
+  req.body._page = Math.max(1, parseInt(String(req.query.page), 10) || 1) - 1;
 
-  const limit = parseInt(req.body.limit, 10) || 10;
+  const limit = parseInt(String(req.query.limit), 10) || 10;
   if (limit > 25) {
     return res.status(400).send({
       status: false,

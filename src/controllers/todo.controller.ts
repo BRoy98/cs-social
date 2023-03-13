@@ -9,8 +9,20 @@ import CutShortError from '../helpers/cutshort-error';
 export class TodoController implements ITodoController {
   list = async (req: Request, res: Response, next: NextFunction) => {
     try {
+      let search = req.query.q;
+      var queryRegEx = new RegExp(String(req.query.q), 'i');
+
+      let find: any = [{ user_id: new Types.ObjectId(req.body?._user?.id) }];
+
+      // build search query if query is present
+      if (search != undefined && search != '') {
+        find.push({
+          $or: [{ title: { $regex: queryRegEx } }, { description: { $regex: queryRegEx } }],
+        });
+      }
+
       const todoList = await TodoModel.find({
-        user_id: req.body?._user?.id,
+        $and: find,
       })
         .select('-user_id')
         .skip(req.body._page * req.body._limit)
