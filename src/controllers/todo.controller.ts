@@ -3,7 +3,7 @@ import { Types } from 'mongoose';
 import { Request, Response, NextFunction } from 'express';
 
 import { ITodoController } from './types';
-import { TodoModel } from '../models/todo.model';
+import { TodoModel } from '../models/todos.model';
 import CutShortError from '../helpers/cutshort-error';
 
 export class TodoController implements ITodoController {
