@@ -37,3 +37,10 @@ export const updateTodoValidator = [
     .withMessage('Description must be less than 100 characters'),
   body('complete').optional().isBoolean().withMessage('Invalid input'),
 ];
+
+export const deleteTodoValidator = [
+  param('todoId')
+    .notEmpty()
+    .custom((value) => Types.ObjectId.isValid(value))
+    .withMessage('Invalid request'),
+];
