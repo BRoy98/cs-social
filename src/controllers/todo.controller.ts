@@ -4,15 +4,21 @@ import { Request, Response, NextFunction } from 'express';
 
 import { ITodoController } from './types';
 import { TodoModel } from '../models/todos.model';
-import CutShortError from '../helpers/cutshort-error';
 
 export class TodoController implements ITodoController {
   list = async (req: Request, res: Response, next: NextFunction) => {
     try {
       let search = req.query.q;
       var queryRegEx = new RegExp(String(req.query.q), 'i');
+      let find: any = [];
 
-      let find: any = [{ user_id: new Types.ObjectId(req.body?._user?.id) }];
+      // filter any user's posts if user id is passed
+      if (req.query.user_id) {
+        find.push({ user_id: new Types.ObjectId(String(req.query.user_id)) });
+      } else {
+        // else show logged in user's posts
+        find.push({ user_id: new Types.ObjectId(req.body?._user?.id) });
+      }
 
       // build search query if query is present
       if (search != undefined && search != '') {
@@ -80,10 +86,6 @@ export class TodoController implements ITodoController {
 
   delete = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      if (!Types.ObjectId.isValid(req.params.todoId)) {
-        throw new CutShortError('error.not-found', 'Could not update todo', 404);
-      }
-
       await TodoModel.findByIdAndDelete(req.params.todoId);
 
       return res.send({
